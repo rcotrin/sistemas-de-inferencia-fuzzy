@@ -1,3 +1,4 @@
+  
 % configuração da fonte, pode ser courier ou times
 
 \documentclass[courier]{uninove-ppgi}
@@ -13,7 +14,7 @@
         \Universidade{UNIVERSIDADE NOVE DE JULHO - UNINOVE}
         \Programa{PROGRAMA DE PÓS GRADUAÇÃO EM INFORMÁTICA E GESTÃO DO CONHECIMENTO - PPGI} 	
         \Autor{GUILHERME-RAFAEL-SAULO} 
-        \Titulo{VALIDAR ARTIGO CIENTIFICO BASEADO EM UM SISTEMA FUZZY UTILIZANDO PROGRAMAÇÃO PRÓPRIA}
+        \Titulo{Relatório de comparação de desempenho do artigo: Application of The Fuzzy Inference System Method to Predict The Number of Weaving Fabric Production}
         \Tipoexame{Trabalho cientifico}
         \Titulacao{Mestre}
         \Orientador{Professor e Dr. Cleber}
@@ -39,8 +40,12 @@
         Atendendo a solicitação de criação de trabalho junto a instituição Universidade Nove de Julho, para a matéria de Sistemas de Inferência Fuzzy (SIF),
         tendo como Professor responsável Prof. DR. Cleber. O proposto foi, realizar uma pesquisa afim de identificar um artigo para que fosse simulado toda a estrutura de um SIF, 
         sendo essa criação desenvolvida utilizando novo sistema, ou seja, sem utilização de softwares ou plugins prontos de mercado, após essa elaboração analisar
-        as saídas do modelo de MANDAQUI com saídas de um sistema por Takagi-Sugeno, ou o inverso, identificando quais foram as melhores saídas olhando para o universo de 
-        discurso e variáveis linguísticas escolhidas para o trabalho.
+        as saídas do modelo de MANDANI com saídas de um sistema por Takagi-Sugeno, ou o inverso, identificando quais foram as melhores saídas olhando para o universo de 
+        discurso e variáveis linguísticas escolhidas para o trabalho. O artigo escolhido buscou determinar aplicação da lógica fuzzy na resolução de problemas de produção usando o método de Tsukamoto e o Método de Sugeno \citeonline{tundo2018application}.
+		O problema em específico foi determinar a produção de tecidos usando 3 variáveis como dados de entrada, sendo essas: estoque, demanda e estoque de custo de produção \citeonline{tundo2018application}.
+		A abordagem a qual iremos utilizar é a de Takagi-Sugeno, não abordaremos a diferença entre essas duas técnicas descritas no artigo, onde iremos comparar apenas os resultados do método de Sugeno usado no artigo
+		com o modelo de MANDANI que elaboramos. Comparar o desempenho de pelo menos três tipos diferentes de funções de pertinência, e para MANDANI realizar a comparação o desempenho de duas
+		funções diferentes de defuzzificação. Por fim, escolher indicador de desempenho para comparar os dois modelos.
     
     \end{resumo}
     
@@ -77,10 +82,8 @@
     % lista de abreviaturas (não colocar espaçamentos adicionais, pois eles contam dentro do environment)
     
     \begin{listaabreviaturas}%
-    	MM & Morfologia matemática \\
-    	CC & Componente conexo \\
-    	EE & Elemento estruturante \\
-    	MS & Mumford-Shah \\
+    	SIF & Sistema de Inferência Fuzzy \\
+
     	\textit{poset} &  Acrônimo para a expressão em inglês \textit{partially ordered set}\\
     				   &  (em português: conjunto parcialmente ordenado) \\
     	\textit{pixel} &  Acrônimo para a expressão em inglês \textit{picture element}\\
@@ -108,49 +111,245 @@
     \chapter{Introdução}
     
         \begin{resumocapitulo}
-            Este capítulo contempla Contextualiza e Metodologia
+            Este capítulo contempla Contextualização e Metodologia
         \end{resumocapitulo}
     
     \section{Contextualização}
     
-        % Versão 0
-        Foi realizado pesquisa da base de dados da Web Of Science para identificar um artigo que fosse aderente ao proposto neste trabalho.
-        Identificamos um artigo que ficou mais adequado pois este possui todas as partes de um SIF, fuzzificação, regras, Inferência e defuzzificação.
-        Escolhemos a variável XPTO para separar a saída na defuzzificação na variável consequente, para posteriomente comparar com o artigo e com o cálculo
-        em Takagi-Sugeno, para assim analisarmos qual foi a solução mais adequada.
-        
         % Versão 1
-        Para a produção de modelo de sistema de inferência \textit{fuzzy} (SIF) implementado em código, foi realizado uma pesquisa na base de dados \textit{Web Of Science} para identificar um artigo tal qual fosse facilmente reproduzível pelos dados fornecidos. E, como consequência da expressão de busca utilizada \textit{EXPRESSÃO DE BUSCA} foi possível encontrar o artigo "\textit{Squids Species Classification using Fuzzy Inference System Based on Morphometric Measurements}.
+		%Parágrafo
+		A produção textil no mundo é algo indispensável existindo uma grande competição entre as empresas desse setor, onde acompanhar de perto a linha de produção para tomada de decisão faz toda a diferença.
+		Quando falamos de vendas podemos relacionar uma cadeia de processos envolvidos, onde se inicia no momento da solicitação do orçamento até a entrega do produto para o cliente final. Em todo esse processo
+		existem técnologia e pessoas envolvidas, sendo que podem existir falhas que podem impactar diretamente o faturamento de uma empresa. Falando de estoque esse pode se definir como uma peça chave,
+		pois muitas vezes para realizar uma venda precisa-se ter insumos já disponíveis para produção. Sendo assim, se uma empresa tem um estoque não controlado, sendo em excesso ou um baixo volume,
+		podem trazer problemas financeiros \citeonline{tundo2018application}.
+		O artigo escolhido tem como objetivo resolver problemas de produção de tecidos usando duas técnicas, Tsukamoto e Takagi-Sugeno. As variáveis de entrada para para criação dos univeros de discurso são: 
+		estoque, demanda e estoque de custo de produção. A variável consequente ou de saída é a quantidade de produção de tecidos.
+
         
         % Parágrafo é destino a proposta
-        Dada as limitações
+  
     
-    \subsection{Metodologia}
+    \section{Metodologia}
     
-    Alguns comandos matemáticos também estão disponíveis, pode-se criar definições, proposições e provas:
+		Separamos a montagem do trabalho em três etapas sendo elas: A Etapa Um consiste em realizar uma pesquisa na literatura para identificar um artigo a qual fosse aderente ao trabalho.
+		Etapa Dois modelagem do código-fonte utilizando linguagem Python e a biblioteca numpy. Ainda nessa etapa, decidimos criar métodos específicos para tratar cada um dos processos SIF:
+		(a) Construção das funções de retas; (b) Fuzzificação; (c) Criação das regras; (d) Inferência; (e) Função de agregação e (f) Cálculo do centroid.
+		Por último a Etapa Três foram realizadas as inferências conforme solicitado no documento de requisitos para elaboração do seminário. Nessa etapa também se elaborou a comparação dos resultados obtidos nas simulações, 
+		e foi utilizado a métrica de avaliação XPTO.
     
+     \chapter{Etapa Um}
     
+        \begin{resumocapitulo}
+            Este capítulo resume de forma objetiva como foi elaborada a pesquisa na literatura afim de identificar o artigo usado neste relatório. 
+        \end{resumocapitulo}
+		
+		\section{Revisão da Literatura}
+		
+		Para a produção de modelo de sistema de inferência \textit{fuzzy} (SIF) implementado em código, foi realizada uma pesquisa na base de dados da \textit{CAPES} 
+		para identificar um artigo tal qual fosse facilmente reproduzível pelos dados fornecidos. E, como consequência da expressão de busca utilizada \textit{SYSTEM INFERENCE FUZZY} 
+		foi possível encontrar o artigo "\textit{Squids Species Classification using Fuzzy Inference System Based on Morphometric Measurements}.
+		O artigo escolhido possui todas as características necessárias para validar o código construído: Fuzzificação; Inferência; Regras e Defuzzificação.
+		O mesmo também possui os dados de produção de tecidos utilizados no artigo, e são de fácil compreensão os universos de discurso assim como as variáveis linguísticas.
     
-    \begin{definicao}{Média aritmética}
-    Para uma amostra $ X=\{x_1,, x_2, \ldots,x_n\} $ de observações, onde $ n $ é o número de observações, se define a média aritmética da seguinte forma:
-    \begin{equation}
-    \mu(X)=\dfrac{1}{n}\sum\limits_{x \in X}x
-    \end{equation}
-    \end{definicao}
-    \begin{proposicao}
-    Se $ k $ é uma constante então multiplicar a média de uma amostra $ X $ é o mesmo de multiplicar cada elemento de $ X $ por $ k $, isto é, $ k \times \mu(X) = \dfrac{1}{n} \sum\limits_{x \in X}x\times k $.
-    \end{proposicao}
-    \begin{prova}
-    Desenvolve-se a igualdade:
-    \begin{align*}
-    k \times \mu(X) &= \dfrac{1}{n} \sum\limits_{x \in X}xk \\
-    & \Longleftrightarrow  \dfrac{(x_1k,x_2k, \ldots, x_nk)}{n} \\
-    & \Longleftrightarrow  \dfrac{nk \times (x_1,x_2, \ldots, x_n)}{n} \\
-    & \Longleftrightarrow   k \times \dfrac{(x_1,x_2, \ldots, x_n)}{n} \\
-    & \Longleftrightarrow   k \times \mu(X) \numberequation{1}
-    \end{align*}
-    \end{prova}
-    Assim, concluí-se que $ k \times \mu(X) = \dfrac{1}{n} \sum\limits_{x \in X}x\times k $. $ \square $
+	
+	\chapter{Etapa Dois}
+    
+        \begin{resumocapitulo}
+            Este capítulo resume a etapa dois do processo a qual foram contruídos os métodos (a) Construção das funções de retas; (b) Fuzzificação; (c) Criação das regras; (d) Inferência; (e) Defuzzificação; (f) Função de agregação e (g) Cálculo do centroid.
+        \end{resumocapitulo}
+		
+		\section{Construção das funções de retas}
+		
+		    %Parágrafo
+			 
+			  \begin{Cálculo de reta}{Trapezoidal}
+              Para uma amostra $ X=\{x_1,, x_2, \ldots,x_n\} $ de observações, onde $ n $ é o número de observações, se define a média aritmética da seguinte forma:
+              \begin{equation}
+              \mu(X)=\dfrac{1}{n}\sum\limits_{x \in X}x
+              \end{equation}
+              \end{Cálculo de reta}
+              \begin{proposicao}
+              Se $ k $ é uma constante então multiplicar a média de uma amostra $ X $ é o mesmo de multiplicar cada elemento de $ X $ por $ k $, isto é, $ k \times \mu(X) = \dfrac{1}{n} \sum\limits_{x \in X}x\times k $.
+              \end{proposicao}
+              \begin{prova}
+              Desenvolve-se a igualdade:
+              \begin{align*}
+              k \times \mu(X) &= \dfrac{1}{n} \sum\limits_{x \in X}xk \\
+              & \Longleftrightarrow  \dfrac{(x_1k,x_2k, \ldots, x_nk)}{n} \\
+              & \Longleftrightarrow  \dfrac{nk \times (x_1,x_2, \ldots, x_n)}{n} \\
+              & \Longleftrightarrow   k \times \dfrac{(x_1,x_2, \ldots, x_n)}{n} \\
+              & \Longleftrightarrow   k \times \mu(X) \numberequation{1}
+              \end{align*}
+              \end{prova}
+              Assim, concluí-se que $ k \times \mu(X) = \dfrac{1}{n} \sum\limits_{x \in X}x\times k $. $ \square $
+		    %Parágrafo
+			
+		    % controla identação
+             \begin{algorithm}[H]
+             \SetAlgoLined
+             \Entrada{$S,\eta, U$} 
+             \Saida{Número esperado de nós atingidos}
+             \Inicio{
+             	$\sigma(S) = 0$ \\
+             \Para{cada $u \in S$}{
+             	$\sigma(S)\leftarrow \sigma(S)+\textsc{Backtrack}(u,\eta,W,U)$\\
+             }
+             }
+             \Retorna{$\sigma(S)$}
+             \label{alg1}
+             \caption{\textsc{straight_equation}}
+             \end{algorithm}
+			
+		\section{Fuzzificação}
+		
+		     %Parágrafo
+			 Insira o texto de explicação
+			 
+		    % controla identação
+             \begin{algorithm}[H]
+             \SetAlgoLined
+             \Entrada{$S,\eta, U$} 
+             \Saida{Número esperado de nós atingidos}
+             \Inicio{
+             	$\sigma(S) = 0$ \\
+             \Para{cada $u \in S$}{
+             	$\sigma(S)\leftarrow \sigma(S)+\textsc{Backtrack}(u,\eta,W,U)$\\
+             }
+             }
+             \Retorna{$\sigma(S)$}
+             \label{alg1}
+             \caption{\textsc{fuzzify}}
+             \end{algorithm}
+			
+		\section{Criação das regras}
+		
+		     %Parágrafo
+			 Insira o texto de explicação
+			 
+		     % controla identação
+             \begin{algorithm}[H]
+             \SetAlgoLined
+             \Entrada{$S,\eta, U$} 
+             \Saida{Número esperado de nós atingidos}
+             \Inicio{
+             	$\sigma(S) = 0$ \\
+             \Para{cada $u \in S$}{
+             	$\sigma(S)\leftarrow \sigma(S)+\textsc{Backtrack}(u,\eta,W,U)$\\
+             }
+             }
+             \Retorna{$\sigma(S)$}
+             \label{alg1}
+             \caption{\textsc{rules_}}
+             \end{algorithm}
+			
+		\section{Inferência}
+		
+			 %Parágrafo
+			 Insira o texto de explicação
+			 
+		     % controla identação
+             \begin{algorithm}[H]
+             \SetAlgoLined
+             \Entrada{$S,\eta, U$} 
+             \Saida{Número esperado de nós atingidos}
+             \Inicio{
+             	$\sigma(S) = 0$ \\
+             \Para{cada $u \in S$}{
+             	$\sigma(S)\leftarrow \sigma(S)+\textsc{Backtrack}(u,\eta,W,U)$\\
+             }
+             }
+             \Retorna{$\sigma(S)$}
+             \label{alg1}
+             \caption{\textsc{infer}}
+             \end{algorithm}
+			
+		\section{Defuzzificação}
+		
+			 %Parágrafo
+			 Insira o texto de explicação
+			 
+		     % controla identação
+             \begin{algorithm}[H]
+             \SetAlgoLined
+             \Entrada{$S,\eta, U$} 
+             \Saida{Número esperado de nós atingidos}
+             \Inicio{
+             	$\sigma(S) = 0$ \\
+             \Para{cada $u \in S$}{
+             	$\sigma(S)\leftarrow \sigma(S)+\textsc{Backtrack}(u,\eta,W,U)$\\
+             }
+             }
+             \Retorna{$\sigma(S)$}
+             \label{alg1}
+             \caption{\textsc{defuzzificacao}}
+             \end{algorithm}
+			
+		\section{Função de agregação}
+		
+		     %Parágrafo
+			 Insira o texto de explicação
+			 
+		     % controla identação
+             \begin{algorithm}[H]
+             \SetAlgoLined
+             \Entrada{$S,\eta, U$} 
+             \Saida{Número esperado de nós atingidos}
+             \Inicio{
+             	$\sigma(S) = 0$ \\
+             \Para{cada $u \in S$}{
+             	$\sigma(S)\leftarrow \sigma(S)+\textsc{Backtrack}(u,\eta,W,U)$\\
+             }
+             }
+             \Retorna{$\sigma(S)$}
+             \label{alg1}
+             \caption{\textsc{aggregation}}
+             \end{algorithm}
+			
+		\section{Cálculo do centroid}
+		
+		     %Parágrafo
+			 Insira o texto de explicação
+			 
+		     % controla identação
+            \begin{algorithm}[H]
+             \SetAlgoLined
+             \Entrada{$S,\eta, U$} 
+             \Saida{Número esperado de nós atingidos}
+             \Inicio{
+             	$\sigma(S) = 0$ \\
+             \Para{cada $u \in S$}{
+             	$\sigma(S)\leftarrow \sigma(S)+\textsc{Backtrack}(u,\eta,W,U)$\\
+             }
+             }
+             \Retorna{$\sigma(S)$}
+             \label{alg1}
+             \caption{\textsc{centroid}}
+             \end{algorithm}
+			 
+	\chapter{Etapa Três}
+    
+        \begin{resumocapitulo}
+            Este capítulo iremos demostrar as análises das inferências que foram realizadas e também onde será demostrado os cálculos para comparação dos métodos. 
+        \end{resumocapitulo}
+		
+		\section{Inferências}
+		 
+		 Descrição das inferências....
+		
+		\section{Analise comparativa dos métodos}
+		
+		 Descrição das análises comparativas....
+		
+	\chapter{Conclusões}
+    
+        \begin{resumocapitulo}
+            Conclusões, Implicações e possíveis trabalhos futuros.
+        \end{resumocapitulo}
+		
+		\section{Conclusões}
+		
+		 Descrição da conclusão....
      
     \subsubsection{Exemplo de subsubseção}
     
@@ -174,24 +373,22 @@
     
     Exemplo simples de pseudocódigo utilizando o pacote {\color{red}algorithm2e} configurado para língua portuguesa:
     
-    % controla identação
-    \begin{algorithm}[H]
-    \SetAlgoLined
-    \Entrada{$S,\eta, U$} 
-    \Saida{Número esperado de nós atingidos}
-    \Inicio{
-    	$\sigma(S) = 0$ \\
-    \Para{cada $u \in S$}{
-    	$\sigma(S)\leftarrow \sigma(S)+\textsc{Backtrack}(u,\eta,W,U)$\\
-    }
-    }
-    \Retorna{$\sigma(S)$}
-    \label{alg1}
-    \caption{\textsc{Esperança}}
-    \end{algorithm}
     
     % Incluindo bibliografia
     
     \bibliography{refs}
     		   
     \end{document}
+© 2021 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Loading complete
